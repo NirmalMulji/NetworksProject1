@@ -1,6 +1,6 @@
 from helper import *
 
-SUT_IP = gethostname()
+SUT_IP = gethostbyname(gethostname())
 SUT_port = 12345
 
 serverName = "paris.cs.utexas.edu"
@@ -9,7 +9,7 @@ serverIP = gethostbyname(serverName)
 
 # creates a UDP socket #
 sock = socket(AF_INET, SOCK_DGRAM)
-sock.bind((serverIP, serverPort))
+sock.bind((SUT_IP, SUT_port))
 
 while True:
     response, address = sock.recvfrom(2048)

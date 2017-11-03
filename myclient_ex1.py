@@ -16,12 +16,13 @@ sock = socket(AF_INET, SOCK_DGRAM)
 
 cookie = randint(0, 100)
 checksum = 0
-SUT_IP = gethostname()
+SUT_IP = gethostbyname(gethostname())
 SUT_port = 12345
 timeouts = 0
 # type 1 request
 type1 = (1 << 14) + 356
 
+print SUT_IP
 
 msg = bytearray()
 
