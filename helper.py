@@ -147,3 +147,30 @@ def dbase(SSN):
             975387379: 2120,
             295889711: 5615}
     return lookup[SSN]
+
+def checkValidity2(recvMessage):
+    # initialize validity checks to false
+    checkFirst = False
+    checkLab = False
+    checkVersion = False
+    checkCookie = False
+    checkSSN = False
+    checkChecksum = False
+    checkResult = False
+
+    # re-compute checksum (and invert xor in computeChecksum())
+    reComputed = hex(computeChecksum(recvMessage) ^ 0xFFFF)
+
+    # verify reComputed checksum is 0xFFFF
+    if (reComputed == "0xffff"):
+        checkChecksum = True
+        print reComputed
+    else:
+        print "Checksum verification failure: ", reComputed
+
+
+
+    if checkChecksum:
+        return True
+
+    return False

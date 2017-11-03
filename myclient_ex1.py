@@ -8,7 +8,7 @@ import sys;
 from helper import *
 
 serverName = "paris.cs.utexas.edu"
-serverPort = 35604
+serverPort = 35605
 serverIP = gethostbyname(serverName)
 
 # creates a UDP socket #
@@ -16,30 +16,40 @@ sock = socket(AF_INET, SOCK_DGRAM)
 
 cookie = randint(0, 100)
 checksum = 0
-SUT_IP = gethostbyname(gethostname())
+IP = gethostbyname(gethostname())
+SUT_IP = inet_aton(IP)
 SUT_port = 12345
 timeouts = 0
 # type 1 request
-type1 = (1 << 14) + 356
+type1 = (1 << 15) + 356
+print type1
 
-print SUT_IP
 
 msg = bytearray()
 
 # pack 356, lab1, version7, cookie, SSN, checksum, and result to bytearray in network byte order
 msg.extend(pack("!HBBI4sHH", type1, 1, 7, cookie, SUT_IP, checksum, SUT_port))
-
+# for i in range(0, len(msg)):
+#     print "byte", i, " ", msg[i]
+#
+# print "---------------------"
 # computes the new checksum
-checksum = computeChecksum(msg)
 
+checksum = computeChecksum(msg)
+# recvMessage = unpack("!HBBI4sHH", msg)
+# result = recvMessage[4]
+# print result
 # repack using new computed checksum
 newMessage = bytearray()
 newMessage.extend(pack("!HBBI4sHH", type1, 1, 7, cookie, SUT_IP, checksum, SUT_port))
 
 
+# for i in range(0, len(newMessage)):
+#     print "byte", i, " ", newMessage[i]
+
 while timeouts < 5:
     try:
-        sock.settimeout(5)
+        sock.settimeout(10)
         sock.sendto(newMessage, (serverName, serverPort))
 
         response = sock.recvfrom(2048)
@@ -56,7 +66,7 @@ while timeouts < 5:
         if timeouts > 5:
             print "max timeouts"
         else:
-            print "timeout occured, retransmitting"
+            print "timeout occurred, retransmitting"
         timeouts += 1
 
 
