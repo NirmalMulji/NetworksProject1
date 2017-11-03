@@ -14,9 +14,6 @@ serverIP = gethostbyname(serverName)
 # creates a UDP socket #
 sock = socket(AF_INET, SOCK_DGRAM)
 
-
-# 0 + 0 + 356 + lab1 + version7 #
-
 cookie = randint(0, 100)
 checksum = 0
 result = 0
@@ -25,26 +22,16 @@ timeouts = 0
 
 
 msg = bytearray()
-msg.extend(pack("!H", 356)) #Add 16 bit data
-msg.extend(pack("!B", 1)) #Add 8 bit data - lab 1
-msg.extend(pack("!B", 7)) #Add 8 bit data - version 7
-msg.extend(pack("!I", cookie)) #Add 32 bit data - cookie
-msg.extend(pack("!I", SSN)) #Add 32 bit data - SSN
-msg.extend(pack("!H", checksum)) #Add 16 bit data - checksum
-msg.extend(pack("!H", result)) #Add 16 bit data - result
 
+# pack 356, lab1, version7, cookie, SSN, checksum, and result to bytearray in network byte order
+msg.extend(pack("!HBBIIHH", 356, 1, 7, cookie, SSN, checksum, result))
 
 # computes the new checksum
 checksum = computeChecksum(msg)
 
+# repack using new computed checksum
 newMessage = bytearray()
-newMessage.extend(pack("!H", 356))       # Add 16 bit data
-newMessage.extend(pack("!B", 1))         # Add 8 bit data - lab 1
-newMessage.extend(pack("!B", 7))         # Add 8 bit data - version 7
-newMessage.extend(pack("!I", cookie))    # Add 32 bit data - cookie
-newMessage.extend(pack("!I", SSN))       # Add 32 bit data - SSN
-newMessage.extend(pack("!H", checksum))  # Add 16 bit data - checksum
-newMessage.extend(pack("!H", result))    # Add 16 bit data - result
+newMessage.extend(pack("!HBBIIHH", 356, 1, 7, cookie, SSN, checksum, result))
 
 
 while timeouts < 5:
