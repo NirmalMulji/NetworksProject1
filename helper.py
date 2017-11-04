@@ -86,7 +86,6 @@ def computeChecksum(msg):
         checksum += msg[i]
         if checksum >> 16 >= 1:
             checksum = checksum - (1 << 16) + 1
-
     # flip the bits (compute 1s complement of the sum)
     checksum ^= 0xFFFF
 
@@ -141,6 +140,8 @@ def checkValidity(recvMessage, cookie, SSN, result):
     # verifies that "transaction outcome" bit of the result is not "1"
     if (result >> 15) < 1:
         checkResult = True
+    else:
+        print "invalid!"
 
     if checkFirst & checkLab & checkVersion & checkCookie & checkSSN & checkChecksum & checkResult:
         return True
@@ -148,14 +149,8 @@ def checkValidity(recvMessage, cookie, SSN, result):
     return False
 
 
+# returns the corresponding error code depending on the error
 def checkValidity2(recvMessage):
-    # initialize validity checks to false
-    # checkFirst = False
-    # checkLab = False
-    # checkVersion = False
-    # checkSSN = False
-    # checkChecksum = False
-    # checkResult = False
 
     if not (recvMessage[0] == 356):
         print "Syntax Error: not 356"
@@ -195,20 +190,11 @@ def checkValidity2(recvMessage):
     msg.extend(pack("!HBBIIHH", recvMessage[0], recvMessage[1], recvMessage[2], recvMessage[3], recvMessage[4],
                     recvMessage[5], recvMessage[6]))
     # re-compute checksum (and invert xor in computeChecksum())
-
     reComputed = hex(computeChecksum(msg) ^ 0xFFFF)
 
     # verify reComputed checksum is 0xFFFF
     if not (reComputed == "0xffff"):
         print "Checksum verification failure: ", reComputed
         return 1 + (1 << 15)
-        # checkChecksum = True
-
-    # else:
-    #     print "Checksum verification failure: ", reComputed
-    
-
-    # if checkChecksum & checkFirst & checkLab & checkVersion & checkSSN & checkResult:
-    #     return True
 
     return 0

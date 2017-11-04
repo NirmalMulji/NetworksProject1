@@ -27,23 +27,15 @@ msg = bytearray()
 
 # pack 356, lab1, version7, cookie, SSN, checksum, and result to bytearray in network byte order
 msg.extend(pack("!HBBI4sHH", type1, 1, 7, cookie, SUT_IP, checksum, SUT_port))
-# for i in range(0, len(msg)):
-#     print "byte", i, " ", msg[i]
-#
-# print "---------------------"
-# computes the new checksum
 
+# computes the new checksum
 checksum = computeChecksum(msg)
-# recvMessage = unpack("!HBBI4sHH", msg)
-# result = recvMessage[4]
-# print result
+
 # repack using new computed checksum
 newMessage = bytearray()
 newMessage.extend(pack("!HBBI4sHH", type1, 1, 7, cookie, SUT_IP, checksum, SUT_port))
 
 
-# for i in range(0, len(newMessage)):
-#     print "byte", i, " ", newMessage[i]
 
 while timeouts < 5:
     try:
@@ -54,10 +46,8 @@ while timeouts < 5:
         packet = response[0]
         recvMessage = unpack("!HBBIIHH", packet)
         result = recvMessage[6]
-        #check what type of error occured if it did
+        # check what type of error occured if it did
         print "Response from CS356 server: ", result
-        # if checkValidity(recvMessage, cookie, SSN, result):
-        #     print "P.O. Box number: ", result
 
         break
     except timeout:

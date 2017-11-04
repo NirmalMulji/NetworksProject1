@@ -11,10 +11,11 @@ serverName = "paris.cs.utexas.edu"
 serverPort = 35604
 serverIP = gethostbyname(serverName)
 
+
 # creates a UDP socket #
 sock = socket(AF_INET, SOCK_DGRAM)
 
-cookie = randint(0, 100)
+cookie = 12 #randint(0, 100)
 checksum = 0
 result = 0
 SSN = input("Provide SSN: ")
@@ -28,7 +29,6 @@ msg.extend(pack("!HBBIIHH", 356, 1, 7, cookie, SSN, checksum, result))
 
 # computes the new checksum
 checksum = computeChecksum(msg)
-
 # repack using new computed checksum
 newMessage = bytearray()
 newMessage.extend(pack("!HBBIIHH", 356, 1, 7, cookie, SSN, checksum, result))
