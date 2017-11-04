@@ -18,12 +18,10 @@ cookie = randint(0, 100)
 checksum = 0
 IP = gethostbyname(gethostname())
 SUT_IP = inet_aton(IP)
-SUT_port = 12345
+SUT_port = 10101
 timeouts = 0
 # type 1 request
 type1 = (1 << 15) + 356
-print type1
-
 
 msg = bytearray()
 
@@ -56,6 +54,7 @@ while timeouts < 5:
         packet = response[0]
         recvMessage = unpack("!HBBIIHH", packet)
         result = recvMessage[6]
+        #check what type of error occured if it did
         print "Response from CS356 server: ", result
         # if checkValidity(recvMessage, cookie, SSN, result):
         #     print "P.O. Box number: ", result
@@ -64,7 +63,7 @@ while timeouts < 5:
     except timeout:
         # timeout expired, retransmit
         if timeouts > 5:
-            print "max timeouts"
+            print "Falure: max timeouts reached"
         else:
             print "timeout occurred, retransmitting"
         timeouts += 1

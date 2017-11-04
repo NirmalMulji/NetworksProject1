@@ -1,7 +1,7 @@
 from helper import *
 
 SUT_IP = gethostbyname(gethostname())
-SUT_port = 12345
+SUT_port = 10101
 
 serverName = "paris.cs.utexas.edu"
 serverPort = 35605
@@ -11,6 +11,7 @@ serverIP = gethostbyname(serverName)
 sock = socket(AF_INET, SOCK_DGRAM)
 sock.bind(('', SUT_port))
 
+#sending type 0 response
 res = (1<<14) + 356
 
 while True:
@@ -18,14 +19,17 @@ while True:
 
     recvMessage = unpack("!HBBIIHH", response)
 
+    x = checkValidity2(recvMessage)
+    if (x == 0):
 
-    if not (checkValidity2(recvMessage) == 0):
-        break
+        SSN = recvMessage[4]
 
+        PO = dbase(SSN)
+        print "PO box number being sent to CS356 server: ", PO
 
-    SSN = recvMessage[4]
+    else:
+        PO = x
 
-    PO = dbase(SSN)
 
     msg = bytearray()
 	# pack 356, lab1, version7, cookie, SSN, checksum, and result to bytearray in network byte order
@@ -54,7 +58,6 @@ while True:
 
     sock.sendto(newMessage, address)
 
-    print PO
 
 
 # Receive a datagram with recvfrom(). Check it for correct version, format and checksum,

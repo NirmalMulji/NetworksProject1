@@ -65,7 +65,7 @@ lookup = {
 # returns the corresponding PO box given a SSN
 def dbase(SSN):
     return lookup[SSN]
-    
+
 # pairs every 2 bytes in the sequence, creates array of 16 bit integers
 def pair2bytes(msg):
     pair = array("H")
@@ -179,7 +179,7 @@ def checkValidity2(recvMessage):
 
     if not (recvMessage[4] in lookup):
         print "Unknown SSN: ", recvMessage[4]
-        return 4 + (1 << 15)
+        return (1 << 15) + 4  
 
         # checkSSN = True
 
